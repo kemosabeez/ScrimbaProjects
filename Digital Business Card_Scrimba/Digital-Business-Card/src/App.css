@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/*ref: https://www.figma.com/design/25LOvloR1QPRLMv7UT0d4u/Digital-Business-Card--Copy-?node-id=0-181&t=uLEWRel8fp10t8eE-0*/
+.app-section{
+  background-color: #1A1B21;
+  width: 500px;
+  margin: 50px auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+main{
+text-align: center;
+}
+
+main h2{
+  color: #F3BF99;
+}
+
+.profile-photo{
+  width: 100%;
+}
+
+.button-section{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 10px;
+}
+
+.button-section button{
+  padding: 10px 60px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.linkedin-btn{
+  background-color: #5093E2;
+  color: white;
+}
+
+.about-section{
+  text-align: left;
+  padding: 10px 60px;
+}
+
+.interest-section{
+  text-align: left;
+  padding: 10px 60px;
+}
+
+footer{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  background-color: #161619;
+  height: 90px;
+  align-items: center;
+  
+}
+footer button{
+  height: 50%;
+  background-color: transparent;
+  border: none;
+}
