@@ -1,11 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import Form from "./components/Form";
+
 
 
 export default function App() {
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Form/>} />
+        <Route path="/recipe" element={<div>Welcome to the Recipes Page!</div>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
