@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Form from "./components/Form";
+import ClaudeRecipePage from "./pages/ClaudeRecipePage";
 
 
 
@@ -10,7 +11,7 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Form/>} />
-        <Route path="/recipe" element={<div>Welcome to the Recipes Page!</div>} />
+        <Route path="/recipe" element={<ClaudeRecipePage />} />
       </Routes>
     </BrowserRouter>
   )

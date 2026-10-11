@@ -1,8 +1,12 @@
 import { useState } from "react";
 import IngredientList from "./IngredientsList";
+import { useNavigate } from "react-router-dom";
+import { generateRecipe } from "../AI/ai";
+
 
 export default function Form() {
     const [ingredients, setIngredients] = useState<string[]>([]);
+    const navigate = useNavigate();
 
     function handleSubmit(formData: FormData): void {
         const ingredient = formData.get("ingredient");
@@ -12,8 +16,11 @@ export default function Form() {
         }
 
         setIngredients((prevIngredients) => [...prevIngredients, ingredient]);
+    }
 
-
+    async function handleGetRecipe(): Promise<void> {
+        const recipe = await generateRecipe(ingredients);
+        navigate("/recipe", { state: { recipe } });
     }
 
     return (
@@ -47,7 +54,8 @@ export default function Form() {
                     </div>
                     <button
                         type="button"
-                        className="shrink-0 rounded-md bg-orange-700 px-4 py-2 text-white">
+                        className="shrink-0 rounded-md bg-orange-700 px-4 py-2 text-white"
+                        onClick={handleGetRecipe}>
                         Get a Recipe
                     </button>
                 </div>
