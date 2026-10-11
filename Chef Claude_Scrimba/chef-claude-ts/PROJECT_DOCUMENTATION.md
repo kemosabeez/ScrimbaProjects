@@ -3,10 +3,9 @@
 ## Project Status
 
 - **JavaScript reference app:** `chef-claude/` contains the finished React/Vite implementation in JavaScript and JSX.
-- **Migration workspace:** `chef-claude-ts/` is a separate Vite + React starter with TypeScript configured, but the Chef Claude app has not yet been migrated into it.
-- **Learning goal:** Rebuild the reference app in TypeScript while understanding the types and decisions along the way. Make the changes one milestone at a time; this document is a guide, not an instruction to automate the migration.
-
-The TypeScript workspace currently has `src/App.tsx` and `src/main.tsx`, but `App.tsx` still renders the Vite starter screen. It does not yet contain the Chef Claude components or routes. Its package currently includes React and Vite, but not the app-specific dependencies used by the reference project.
+- **TypeScript app:** `chef-claude-ts/` is a separate React/Vite application that rebuilds Chef Claude with TypeScript and TSX.
+- **Migration status:** Complete. The app builds and lints, and its main user flow and missing-recipe fallback have been checked manually in the browser.
+- **Learning goal:** This document records the migration steps and concepts. The JavaScript reference remains available for comparison.
 
 ## Purpose and Target Behavior
 
@@ -48,20 +47,35 @@ chef-claude/
 └── package.json
 ```
 
-`AI/`, `components/`, and `pages/` are outside `src/` in the reference. The TypeScript workspace can use the same organization or a `src/`-centered organization; choose one deliberately and keep imports consistent.
+`AI/`, `components/`, and `pages/` are outside `src/` in the JavaScript reference. The TypeScript app deliberately places its application modules under `src/`.
 
 ### TypeScript migration workspace: `chef-claude-ts/`
 
 ```text
 chef-claude-ts/
+├── public/
+│   └── chef-claude-icon.png
 ├── src/
-│   ├── App.tsx                     Vite starter screen; replace as a migration step
-│   ├── main.tsx                    TypeScript React entry point
-│   └── index.css                   Global stylesheet
-├── package.json                    Vite/React starter scripts and dependencies
+│   ├── AI/
+│   │   └── ai.ts                   Typed Gemini client and recipe generation
+│   ├── components/
+│   │   ├── Form.tsx                Ingredient state, form, and recipe request flow
+│   │   ├── Header.tsx              App header and logo
+│   │   └── IngredientsList.tsx     Typed ingredient list presentation
+│   ├── pages/
+│   │   └── ClaudeRecipePage.tsx    Recipe route, state validation, and Markdown rendering
+│   ├── App.tsx                     Routes for `/` and `/recipe`
+│   ├── index.css                   Tailwind import and stylesheet
+│   └── main.tsx                    TypeScript React entry point
+├── .env                            Local API key configuration (ignored by Git)
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
 ├── tsconfig.json                   TypeScript project references
 ├── tsconfig.app.json               Browser-app TypeScript options
-└── vite.config.ts                  Vite and React configuration
+├── tsconfig.node.json              Node/Vite config TypeScript options
+└── vite.config.ts                  Vite, React, and Tailwind configuration
 ```
 
 ## Migration Milestones
@@ -194,17 +208,24 @@ Run from `chef-claude-ts/`:
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint across the workspace |
 
-The TypeScript starter's `build` command runs `tsc -b && vite build`. There is currently no test script or automated test suite configured.
+The TypeScript workspace's `build` command runs `tsc -b && vite build`. There is currently no test script or automated test suite configured.
 
 ## Environment and Security Notes
 
-The reference app reads `VITE_GEMINI_API_KEY` from its local `.env` file. Set up a separate local `.env` in `chef-claude-ts/` when you reach the Gemini integration milestone:
+The TypeScript app reads `VITE_GEMINI_API_KEY` from its local `.env` file. Configure a separate local `.env` in `chef-claude-ts/`:
 
 ```dotenv
 VITE_GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Do not commit `.env` or put a real key in source control. Restart the Vite dev server after changing environment variables. Vite exposes `VITE_` variables in client-side code, so a deployed Gemini key can be inspected by users. Production use should move the API call behind a server-side endpoint and keep the secret on the server; that is outside the scope of this learning migration.
+Do not commit `.env` or put a real key in source control; `.env` is listed in `.gitignore`. Restart the Vite dev server after changing environment variables. Vite exposes `VITE_` variables in client-side code, so a deployed Gemini key can be inspected by users. Production use should move the API call behind a server-side endpoint and keep the secret on the server; that is outside the scope of this learning migration.
+
+## Migration Completion Summary
+
+- `npm run build` and `npm run lint` pass in `chef-claude-ts/`.
+- Manual browser checks confirmed ingredient entry, the four-ingredient recipe prompt threshold, Gemini recipe generation, recipe navigation and Markdown display, the back link, and the missing-recipe fallback.
+- The TypeScript app keeps its header visible on both routes, unlike the JavaScript reference, where the header is rendered as part of the home form. The TypeScript form also uses slightly different ingredient placeholder and heading text. These presentation differences were reviewed during the comparison milestone.
+- Navigation state is runtime-checked before recipe text is rendered. Ingredient data remains in memory, and route state is not persisted across refreshes.
 
 ## Existing Behavior and Known Limitations
 
@@ -214,5 +235,5 @@ These describe the JavaScript reference app. Preserve them during the migration 
 - Recipe output is carried in navigation state, not encoded in the URL or persisted. Refreshing or directly opening `/recipe` shows the no-recipe fallback.
 - The form does not provide ingredient removal, duplicate prevention, or visible validation for blank values.
 - The recipe request path has no visible loading state or user-facing API error handling. Network, API-key, quota, or model errors may interrupt generation.
-- The recipe model identifier is hard-coded in `AI/ai.js`.
+- The recipe model identifier is hard-coded in the Gemini service (`AI/ai.js` in the reference and `src/AI/ai.ts` in the TypeScript app).
 - There is no backend, persistence layer, authentication, or test suite in the reference app.
