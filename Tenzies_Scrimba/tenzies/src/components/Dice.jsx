@@ -1,9 +1,15 @@
 
-
-export default function Dice({ value, isHeld }) {
-    return (
-        <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-white text-2xl font-bold text-slate-900 shadow transition duration-150 hover:scale-110 hover:bg-blue-100 hover:shadow-md">
-            {value}
-        </div>
-    );
-}x
+export default function Dice({ value, isHeld, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={isHeld}
+      className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-md text-2xl font-bold shadow transition hover:scale-110 ${
+        isHeld ? "bg-green-300" : "bg-white text-slate-900"
+      }`}
+    >
+      {value}
+    </button>
+  );
+}

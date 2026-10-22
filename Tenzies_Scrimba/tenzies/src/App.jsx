@@ -1,23 +1,51 @@
-import { useState, useEffect } from "react";
-import Dice from "./components/dice";
+import { useState } from "react";
+import Dice from "./components/Dice";
 
 export default function App() {
+  const [dice, setDice] = useState(() =>
+    Array.from({ length: 10 }, generateDie)
+  );
 
-  const [isHeld, setIsHeld] = useState(false);
-  const diceValue = [1, 2, 3, 4, 5, 6];
-  const dice = Array.from({ length: 10 }, () => {
-    return diceValue[Math.floor(Math.random() * diceValue.length)];
-  })
+  function reroll() {
+    setDice((currentDice) =>
+      currentDice.map((die) => (die.isHeld ? die : generateDie()))
+    );
+  }
+
+  function toggleHeld(index) {
+    setDice((currentDice) =>
+      currentDice.map((die, i) =>
+        i === index ? { ...die, isHeld: !die.isHeld } : die
+      )
+    );
+  }
 
   return (
-    <main className="flex items-center justify-center">
+    <main className="flex flex-col items-center justify-center gap-6">
       <div className="grid grid-cols-5 grid-rows-2 gap-4">
-        <button className="col-span-5 row-span-2">
-        {dice.map((value, index) => (
-          <Dice value={value} key={index} status={isHeld} />
+        {dice.map((die, index) => (
+          <Dice
+            key={index}
+            value={die.value}
+            isHeld={die.isHeld}
+            onClick={() => toggleHeld(index)}
+          />
         ))}
-        </button>
       </div>
+      <button
+        type="button"
+        onClick={reroll}
+        className="rounded-md bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700"
+      >
+        Reroll
+      </button>
     </main>
   );
+}
+
+function generateDie() {
+  return {
+    value: Math.ceil(Math.random() * 6),
+    isHeld: false,
+  };
 }
