@@ -1,31 +1,33 @@
 import { useState } from "react";
-import Dice from "./components/Dice";
-import GameFinishModal from "./components/GameFinishModal";
+import Dice from "./components/Dice.tsx";
+import GameFinishModal from "./components/GameFinishModal.tsx";
+import type { JSX } from "react"
+import type { Die } from "./types.ts"
 
-export default function App() {
-  const [dice, setDice] = useState(() =>
+export default function App(): JSX.Element {
+  const [dice, setDice] = useState<Die[]>(() =>
     Array.from({ length: 10 }, generateDie)
   );
 
-  const hasWon = dice.every((die) => die.isHeld && die.value === dice[0].value);
-  const [rollCount, setRollCount] = useState(0);
+  const hasWon: boolean = dice.every((die) => die.isHeld && die.value === dice[0].value);
+  const [rollCount, setRollCount] = useState<number>(0);
 
-  function reroll() {
-    setDice((currentDice) =>
-      currentDice.map((die) => (die.isHeld ? die : generateDie()))
+  function reroll(): void {
+    setDice((currentDice: Die[]) =>
+      currentDice.map((die: Die) => (die.isHeld ? die : generateDie()))
     );
-    setRollCount((prevCount) => prevCount + 1);
+    setRollCount((prevCount: number) => prevCount + 1);
   }
 
-  function toggleHeld(index) {
-    setDice((currentDice) =>
+  function toggleHeld(index: number): void {
+    setDice((currentDice: Die[]) =>
       currentDice.map((die, i) =>
         i === index ? { ...die, isHeld: !die.isHeld } : die
       )
     );
   }
 
-  function restart() {
+  function restart(): void {
     setDice(Array.from({ length: 10 }, generateDie));
     setRollCount(0);
   }
@@ -41,7 +43,7 @@ export default function App() {
         Rolls: <span className="text-lg font-bold text-blue-600">{rollCount}</span>
       </p>
       <div className="grid grid-cols-5 grid-rows-2 gap-4">
-        {dice.map((die, index) => (
+        {dice.map((die: Die, index: number) => (
           <Dice
             key={index}
             value={die.value}
@@ -62,7 +64,7 @@ export default function App() {
   );
 }
 
-function generateDie() {
+function generateDie(): Die {
   return {
     value: Math.ceil(Math.random() * 6),
     isHeld: false,

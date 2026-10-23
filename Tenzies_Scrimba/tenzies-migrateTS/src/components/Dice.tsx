@@ -1,5 +1,14 @@
+import type { JSX } from "react"
 
-export default function Dice({ value, isHeld, onClick }) {
+
+type DiceProps = {
+  value: number
+  isHeld: boolean
+  onClick: () => void
+}
+
+
+export default function Dice({ value, isHeld, onClick }: DiceProps): JSX.Element {
   return (
     <button
       type="button"
